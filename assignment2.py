@@ -142,3 +142,22 @@ print ("The weights are ",weight11, weight12, weight13, weight14)
 # find the difference between GH and 0.5. This will be the error. Apply this error as a positive to two of the nodes and as a negative to the other two weights.
 # IF GH > 0.5 then remove from the lists those numbers involved. Store numbers as string in groups with GH 
 
+if weight[xy] == 7:  
+    chooseS1 = ScoreClass7.pop(1)
+    S1 = data[chooseS1]
+
+GHvalue = GH(S1,S2,S3,S4)
+GHerror = abs.(05-GHvalue)
+# we are going to have to experiment with the error
+# Since we have a bell curve distribution then the lowest number needs to go lower and highest number higher. 
+
+if GHvalue > 0.5:
+    groups.append("The group " S1,S2,S3,S4 " had a GH of "GH " and a Euclidian distance of " Diff " Between " Df1, Df2)
+
+
+
+
+
+
+
+
