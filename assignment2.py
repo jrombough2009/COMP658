@@ -58,7 +58,7 @@ def GH(vec1,vec2,vec3,vec4):
 
     AD = ((vec1max + vec2max + vec3max + vec4max) + (vec1min + vec2min + vec3min + vec4min)) / 2
 
-    total =  (TotalScore(vec2)-TotalScore(vec1))  / (1 + abs(AD-TotalScore(vec3))+ abs(AD-TotalScore(vec4)))
+    total =  abs(TotalScore(vec2)-TotalScore(vec1))  / (1 + abs(AD-TotalScore(vec3))+ abs(AD-TotalScore(vec4)))
     
     return ([total,AD])
 
@@ -138,10 +138,10 @@ listsoflists  = [ScoreClass7] + [ScoreClass8] + [ScoreClass9] + [ScoreClass10] +
 #weight13 = randrange(6,8)
 #weight14 = randrange(9,10)
 
-weight11 = randrange(0,10)
-weight12 = randrange(0,10)
-weight13 = randrange(0,10)
-weight14 = randrange(0,10)
+weight11 = randrange(0,3)
+weight12 = randrange(4,5)
+weight13 = randrange(6,7)
+weight14 = randrange(8,10)
 
 print ("The weights are ",weight11, weight12, weight13, weight14)
 
@@ -158,49 +158,58 @@ def groupdiff(S1,S2,S3,S4):
 
 # maybe make this a recursive function
 def findsafelist(weight):
-    #weight = weight - 7 
-    if ((len(listsoflists[(weight)]) == 0) and (len(listsoflists[(weight-1)]) == 0)):
+    if ((len(listsoflists[(weight)]) == 0) and (((len(listsoflists[(weight-1)]) == 0)) or weight == 0)):
         weight =+ 1
-    if ((len(listsoflists[(weight)]) == 0) and (len(listsoflists[(weight+1)]) == 0)):
+    if ((len(listsoflists[(weight)]) == 0) and (((len(listsoflists[(weight+1)]) == 0)) or weight == 10)):
         weight =- 1
     return weight
-
-iterations = 20
+   
+x = 0
+iterations = 400
 while iterations > 0:
-    ADnext = True
+    weight11 = randrange(0,3)
+    weight12 = randrange(4,5)
+    weight13 = randrange(6,7)
+    weight14 = randrange(8,10)
     iterations -= 1 
-    x = 1
-    while ADnext == True:
-        S1 = listsoflists[(findsafelist(weight11))][-x]
-        Svec1 = data[S1]
-        S2 = listsoflists[(findsafelist(weight12))][-x]
-        Svec2 = data[S2]
-        S3 = listsoflists[(findsafelist(weight13))][-x]
-        Svec3 = data[S3]
-        S4 = listsoflists[(findsafelist(weight14))][-x]
-        Svec4 = data[S4]
-        GHvalue = GH(Svec1,Svec2,Svec3,Svec4)
-        print Svec1, Svec2, Svec3, Svec4
+    x -=1
+    try:
+        S1 = listsoflists[(findsafelist(weight11))][x]
+    except IndexError:
+        S1 = listsoflists[(findsafelist(weight11+1))][-1]
+    Svec1 = data[S1]
+    try:
+        S2 = listsoflists[(findsafelist(weight12))][x]
+    except IndexError:
+        S2 = listsoflists[(findsafelist(weight12+1))][-1]
+    Svec2 = data[S2]
+    try:
+        S3 = listsoflists[(findsafelist(weight13))][x]
+    except IndexError:
+        S3 = listsoflists[(findsafelist(weight13+1))][-1]   
+    Svec3 = data[S3]
+    try:
+        S4 = listsoflists[(findsafelist(weight14))][x]
+    except IndexError:
+        S4 = listsoflists[(findsafelist(weight14+1))][-1]
+    Svec4 = data[S4]
+    GHvalue = GH(Svec1,Svec2,Svec3,Svec4)
+    print Svec1, Svec2, Svec3, Svec4
     #This cannot be linear or we end up with the osciallating XOR issue. 
     #This error rate needs to ride the 0 line 
-        GHerror = GHvalue[0] -0.5
-        AD = GHvalue[1]
-        print ("The GHvalue and error rates are ", GHvalue, GHerror, AD,x)
-        print ("The weights are ",weight11, weight12, weight13, weight14)
-        if AD >= 7.5:
-            x += 1
-        if AD < 7.5:
-            Adnext = False
-    print ("The GHvalue and error rates are ", GHvalue, GHerror)
+    GHerror = 0.5 - GHvalue[0]
+    AD = GHvalue[1]
+    print ("The GHvalue and error rates are ", GHvalue, GHerror, x)
     print ("The weights are ",weight11, weight12, weight13, weight14)
-    weight11 = int(weight11 + GHerror)
-    weight12 = int(weight12 + GHerror) 
-    weight13 = int(weight13 - GHerror)
-    weight14 = int(weight14 - GHerror)
     highestdiff = groupdiff(S1,S2,S3,S4)
-    if GHvalue[0] > 0.5:
-        groups.append([listsoflists[(weight11-7)].pop(),listsoflists[(weight12-7)].pop(),listsoflists[(weight13-7)].pop(),listsoflists[(weight14-7)].pop(),GHvalue,highestdiff])
-        print groups
+    if (GHvalue[0] > 0.5):
+        groups.append([listsoflists[weight11][x],listsoflists[weight12][x],listsoflists[weight13][x],listsoflists[weight14][x],GHvalue,highestdiff])
+        print ("The groups are :",groups)
+        del listsoflists[weight11][x]
+        del listsoflists[weight12][x]
+        del listsoflists[weight13][x]
+        del listsoflists[weight14][x]
+        x = 0
 
 
 
